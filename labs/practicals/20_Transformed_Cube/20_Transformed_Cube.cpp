@@ -20,22 +20,59 @@ bool load_content() {
       // *********************************
       // Add the position data for triangles here, (6 verts per side)
       // Front
+	  vec3(0.0f,0.0f,0.0f),
+	  vec3(1.0f,0.0f,0.0f),
+	  vec3(0.0f,1.0f,0.0f),
 
+	  vec3(1.0f,0.0f,0.0f),
+	  vec3(1.0f,1.0f,0.0f),
+	  vec3(0.0f,1.0f,0.0f),
 
       // Back
+	  vec3(1.0f,1.0f,-1.0f),
+	  vec3(1.0f,0.0f,-1.0f),
+	  vec3(0.0f,0.0f,-1.0f),
 
+	  vec3(0.0f,0.0f,-1.0f),
+	  vec3(0.0f,1.0f,-1.0f),
+	  vec3(1.0f,1.0f,-1.0f),
 
       // Right
+	  vec3(1.0f,0.0f,0.0f),
+	  vec3(1.0f,0.0f,-1.0f),
+	  vec3(1.0f,1.0f,0.0f),
+
+	  vec3(1.0f,0.0f,-1.0f),
+	  vec3(1.0f,1.0f,-1.0f),
+	  vec3(1.0f,1.0f,0.0f),
 
 
       // Left
+	  vec3(0.0f,1.0f,-1.0f),
+	  vec3(0.0f,0.0f,-1.0f),
+	  vec3(0.0f,0.0f,0.0f),
 
+	  vec3(0.0f,0.0f,0.0f),
+	  vec3(0.0f,1.0f,0.0f),
+	  vec3(0.0f,1.0f,-1.0f),
 
       // Top
+	  vec3(0.0f,1.0f,-1.0f),
+	  vec3(0.0f,1.0f,0.0f),
+	  vec3(1.0f,1.0f,0.0f),
 
+	  vec3(1.0f,1.0f,0.0f),
+	  vec3(1.0f,1.0f,-1.0f),
+	  vec3(0.0f,1.0f,-1.0f),
 
       // Bottom
+	  vec3(0.0f,0.0f,0.0f),
+	  vec3(0.0f,0.0f,-1.0f),
+	  vec3(1.0f,0.0f,-1.0f),
 
+	  vec3(1.0f,0.0f,-1.0f),
+	  vec3(1.0f,0.0f,0.0f),
+	  vec3(0.0f,0.0f,0.0f),
 
       // *********************************
   };
@@ -66,37 +103,27 @@ bool update(float delta_time) {
   // *********************************
   // Use keys to update transform values
   // WSAD - movement
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_W)) {
+		pos += vec3(0.0f, 0.0f, -5.0f) * delta_time;
+	}
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_S)) {
+		pos += vec3(0.0f, 0.0f, 5.0f) * delta_time;
+	}
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_A)) {
+		pos += vec3(-5.0f, 0.0f, 0.0f) * delta_time;
+	}
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_D)) {
+		pos += vec3(5.0f, 0.0f, 0.0f) * delta_time;
+	}
   // Cursor - rotation
+	
   // O decrease scale, P increase scale
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_P)) {
+		s *= 5.0f;
+	}
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_O)) {
+		s /= 5.0f;
+	}
 
   // *********************************
   // Update the camera
@@ -110,7 +137,10 @@ bool render() {
   mat4 T, R, S, M;
   // *********************************
   // Create transformation matrix
-
+  T = translate(mat4(1.0f), pos);
+  R = rotate(mat4(1.0f), theta, vec3(0.0f, 0.0f, 1.0f));
+  S = scale(mat4(1.0f), vec3(s, s, s));
+  M = T * (R*S);
 
 
 
