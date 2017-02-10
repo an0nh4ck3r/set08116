@@ -18,6 +18,8 @@ bool load_content() {
   geometry geom;
   geom.set_type(GL_TRIANGLE_STRIP);
 
+
+
   // Positions
   vector<vec3> positions{vec3(-1.0f, -1.0f, 0.0f), vec3(1.0f, -1.0f, 0.0f), vec3(-1.0f, 1.0f, 0.0f),
                          vec3(1.0f, 1.0f, 0.0f)};
@@ -26,6 +28,7 @@ bool load_content() {
   // Add to the geometry
   geom.add_buffer(positions, BUFFER_INDEXES::POSITION_BUFFER);
   geom.add_buffer(tex_coords, BUFFER_INDEXES::TEXTURE_COORDS_0);
+
 
   // Create mesh object
   m = mesh(geom);
@@ -50,6 +53,7 @@ bool load_content() {
   cam.set_target(vec3(0.0f, 0.0f, 0.0f));
   auto aspect = static_cast<float>(renderer::get_screen_width()) / static_cast<float>(renderer::get_screen_height());
   cam.set_projection(quarter_pi<float>(), aspect, 2.414f, 1000.0f);
+
 
   return true;
 }
