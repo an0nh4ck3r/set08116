@@ -103,6 +103,7 @@ bool update(float delta_time) {
   // *********************************
   // Use keys to update transform values
   // WSAD - movement
+<<<<<<< HEAD
 	if (glfwGetKey(renderer::get_window(), GLFW_KEY_W)) {
 		pos += vec3(0.0f, 0.0f, -5.0f) * delta_time;
 	}
@@ -117,6 +118,9 @@ bool update(float delta_time) {
 	}
   // Cursor - rotation
 	
+=======
+  // Arrow Keys - rotation
+>>>>>>> 85a4e44a38395ba48c4be5657e47484995385091
   // O decrease scale, P increase scale
 	if (glfwGetKey(renderer::get_window(), GLFW_KEY_P)) {
 		s *= 5.0f;
