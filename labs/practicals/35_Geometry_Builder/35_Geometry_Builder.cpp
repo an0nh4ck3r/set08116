@@ -16,22 +16,24 @@ bool load_content() {
 
   // *********************************
   // box
-
+  meshes["box"] = mesh(geometry_builder::create_box(vec3 (1.0f,1.0f,1.0f)));
   // Tetrahedron
-
+  meshes["tetra"] = mesh(geometry_builder::create_tetrahedron(vec3(1.0f, 1.0f, 1.0f)));
   // Pyramid
-
+  meshes["pyra"] = mesh(geometry_builder::create_pyramid(vec3(1.0f, 1.0f, 1.0f)));
   // Disk
-
+  meshes["disk"] = mesh(geometry_builder::create_disk(unsigned int(10), vec3(1.0f, 1.0f, 1.0f)));
   // Cylinder
-
+  meshes["cylinder"] = mesh(geometry_builder::create_cylinder(unsigned int(10), unsigned int(10), vec3(1.0f, 1.0f, 1.0f)));
   // Sphere
-
+  meshes["sphere"] = mesh(geometry_builder::create_sphere(unsigned int(10), unsigned int(10), vec3(1.0f, 1.0f, 1.0f)));
   // Torus
-
+  meshes["torus"] = mesh(geometry_builder::create_torus(unsigned int(10), unsigned int(10), float(1.0f), float(1.0f)));
 
   // Set the transforms for your meshes here
   // 5x scale, move(-10.0f, 2.5f, -30.0f)
+   meshes["box"].get_transform().scale = vec3(5.0f);
+   meshes["box"].get_transform().position = vec3(-10.0f, 2.5f, -30.0f);
 
 
   // 4x scale, move(-30.0f, 10.0f, -10.0f)
