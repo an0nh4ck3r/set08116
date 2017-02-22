@@ -37,23 +37,30 @@ bool load_content() {
 
 
   // 4x scale, move(-30.0f, 10.0f, -10.0f)
-
+   meshes["tetra"].get_transform().scale = vec3(4.0f);
+   meshes["tetra"].get_transform().position = vec3(-30.0f, 10.0f, -10.0f);
 
   // 5x scale, move(-10.0f, 7.5f, -30.0f)
-
+   meshes["pyra"].get_transform().scale = vec3(5.0f);
+   meshes["pyra"].get_transform().position = vec3(-10.0f, 7.5f, -30.0f);
 
   // scale(3.0f, 1.0f, 3.0f), move(-10.0f, 11.5f, -30.0f), 180 rotate X axis
-
+   meshes["disk"].get_transform().scale = vec3(3.0f, 1.0f, 3.0f);
+   meshes["disk"].get_transform().position = vec3(-10.0f, 11.5f, -30.0f);
+   meshes["disk"].get_transform().rotate(vec3(180.0, 0.0, 0.0));
 
 
   // 5x scale, move(-25.0f, 2.5f, -25.0f)
-
+   meshes["cylinder"].get_transform().scale = vec3(5.0f);
+   meshes["cylinder"].get_transform().position = vec3(-25.0f, 2.5f, -25.0f);
 
   // 2.5x scale, move(-25.0f, 10.0f, -25.0f)
-
+   meshes["sphere"].get_transform().scale = vec3(2.5f);
+   meshes["sphere"].get_transform().position = vec3(-25.0f, 10.0f, -25.0f);
 
   // 180 rotate X axis, move(-25.0f, 10.0f, -25.0f)
-
+   meshes["torus"].get_transform().rotate(vec3(180.0, 0.0, 0.0));
+   meshes["torus"].get_transform().position = vec3(-25.0f, 10.0f, -25.0f);
 
   // *********************************
 
@@ -96,9 +103,9 @@ bool render() {
 
     // *********************************
     // Bind texture to renderer
-
+	renderer::bind(tex, 0);
     // Set the texture value for the shader here
-
+	glUniform1i(eff.get_uniform_location("tex"), 0);
     // *********************************
     // Render mesh
     renderer::render(m);
