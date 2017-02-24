@@ -9,6 +9,9 @@ map<string, mesh> meshes;
 effect eff;
 texture tex;
 texture tex2;
+texture tex3;
+texture tex4;
+texture tex5;
 target_camera cam;
 
 bool load_content() {
@@ -16,8 +19,9 @@ bool load_content() {
   meshes["plane"] = mesh(geometry_builder::create_plane());
 
   // *********************************
-  // box
-  meshes["box"] = mesh(geometry_builder::create_box(vec3 (1.0f,1.0f,1.0f)));
+
+  // Campfire
+  //meshes[""] = mesh(geometry(""));
   // Tetrahedron
   meshes["tetra"] = mesh(geometry_builder::create_tetrahedron(vec3(1.0f, 1.0f, 1.0f)));
   // Pyramid
@@ -35,17 +39,13 @@ bool load_content() {
   // Transforms for the plane/scale
   meshes["plane"].get_transform().scale = vec3(5.0f);
   // 5x scale, move(-10.0f, 2.5f, -30.0f)
-   //meshes["box"].get_transform().scale = vec3(5.0f);
-   //meshes["box"].get_transform().position = vec3(-10.0f, 2.5f, -30.0f);
-
+ 
 
   // 4x scale, move(-30.0f, 10.0f, -10.0f)
    //meshes["tetra"].get_transform().scale = vec3(4.0f);
    //meshes["tetra"].get_transform().position = vec3(-30.0f, 10.0f, -10.0f);
 
   // 5x scale, move(-10.0f, 7.5f, -30.0f)
-   //meshes["pyra"].get_transform().scale = vec3(5.0f);
-   //meshes["pyra"].get_transform().position = vec3(-10.0f, 7.5f, -30.0f);
 
   // scale(3.0f, 1.0f, 3.0f), move(-10.0f, 11.5f, -30.0f), 180 rotate X axis
    //meshes["disk"].get_transform().scale = vec3(3.0f, 1.0f, 3.0f);
@@ -54,8 +54,8 @@ bool load_content() {
 
 
   // 5x scale, move(-25.0f, 2.5f, -25.0f)
-   meshes["cylinder"].get_transform().scale = vec3(5.0f, 15.0f, 1.0f);
-   meshes["cylinder"].get_transform().position = vec3(1.0f, 2.5f, -25.0f);
+   //meshes["cylinder"].get_transform().scale = vec3(3.0f, 25.0f, 3.0f);
+  // meshes["cylinder"].get_transform().position = vec3(1.0f, 2.5f, -25.0f);
 
   // 2.5x scale, move(-25.0f, 10.0f, -25.0f)
    //meshes["sphere"].get_transform().scale = vec3(2.5f);
@@ -80,6 +80,7 @@ bool load_content() {
   // Set camera properties
   cam.set_position(vec3(10.0f, 10.0f, 10.0f));
   cam.set_target(vec3(-100.0f, 0.0f, -100.0f));
+  
   auto aspect = static_cast<float>(renderer::get_screen_width()) / static_cast<float>(renderer::get_screen_height());
   cam.set_projection(quarter_pi<float>(), aspect, 2.414f, 1000.0f);
   return true;
@@ -116,7 +117,6 @@ bool render() {
     // Set the texture value for the shader here
 	glUniform1i(eff.get_uniform_location("tex"), 0);
 	glUniform1i(eff.get_uniform_location("tex2"), 1);
-
     // *********************************
     // Render mesh
     renderer::render(m);
