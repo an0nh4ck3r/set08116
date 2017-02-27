@@ -61,7 +61,9 @@ bool update(float delta_time) {
   // *********************************
   // Use keyboard to change camera location
   // 1 - (50, 10, 50)
-
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_UP)) {
+		cam.set_position(vec3(50.0f, 10.0f, 50.0f));
+	}
 
 
   // 2 - (-50, 10, 50)
