@@ -39,12 +39,15 @@ layout(location = 0) out vec4 colour;
 void main() {
   // *********************************
   // Get distance between point light and vertex
-
+  float d = distance(point.position, position);
   // Calculate attenuation factor
 
   // Calculate light colour
-
-
+  vec4 light_colour;
+  if (d < range)
+	light_colour = point.colour;
+  else
+	light_colour = vec4(0.0, 0.0, 0.0, 1.0);
   // Calculate light dir
 
   // Now use standard phong shading but using calculated light colour and direction
