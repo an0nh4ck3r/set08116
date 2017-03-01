@@ -97,7 +97,7 @@ bool load_content() {
   eff.add_shader("49_Point_Light/point.frag", GL_FRAGMENT_SHADER);
 
 
-  //hahaha
+  //hahhfdhfghd
   // Build effect
   eff.build();
   // *********************************
