@@ -90,12 +90,9 @@ bool render() {
     glUniformMatrix4fv(eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
     // *********************************
     // Set M matrix uniform
-
+	glUniformMatrix4fv(eff.get_uniform_location("M"), 1, GL_FALSE, value_ptr(m.get_transform().get_transform_matrix()));
     // Set N matrix uniform - remember - 3x3 matrix
-	glUniformMatrix3fv(eff.get_uniform_location("N"),
-		1,
-		GL_FALSE,
-		value_ptr(m.get_transform().get_normal_matrix()));
+	glUniformMatrix3fv(eff.get_uniform_location("N"), 1, GL_FALSE, value_ptr(m.get_transform().get_normal_matrix()));
     // Set material colour - specular material is white
 	glUniform4fv(eff.get_uniform_location("material_colour"), 1, value_ptr(vec4(1.0f, 1.0f, 1.0f, 1.0f)));
     // Set shininess - Use 50.0f
