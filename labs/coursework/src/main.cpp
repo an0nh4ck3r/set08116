@@ -11,8 +11,7 @@ texture tex;
 texture tex2;
 texture tex3;
 texture tex4;
-texture tex5;
-target_camera cam;
+point_light light;
 free_camera freecam;
 bool initialise() {
 	//Set input mode
@@ -22,39 +21,52 @@ bool initialise() {
 bool load_content() {
   // Create plane mesh
   meshes["plane"] = mesh(geometry_builder::create_plane());
-
-  // *********************************
-
-  // Campfire
-  //meshes[""] = mesh(geometry(""));
-  
   // Pyramid
   meshes["pyra"] = mesh(geometry_builder::create_pyramid(vec3(1.0f, 1.0f, 1.0f)));
   // Cylinder
   meshes["cylinder"] = mesh(geometry_builder::create_cylinder(unsigned int(10), unsigned int(10), vec3(1.0f, 1.0f, 1.0f)));
   // Torus
   meshes["torus"] = mesh(geometry_builder::create_torus(unsigned int(10), unsigned int(10), float(1.0f), float(1.0f)));
-
-  // Set the transforms for your meshes here
-  // Transforms for the plane/scale
+  // Transforms for the geometry
   meshes["plane"].get_transform().scale = vec3(5.0f);
   meshes["pyra"].get_transform().scale = vec3(6.0f);
   meshes["pyra"].get_transform().position = vec3(-10.0f, 5.0f, -15.0f);
-  // 5x scale, move(-25.0f, 2.5f, -25.0f)
-   meshes["cylinder"].get_transform().scale = vec3(3.0f, 25.0f, 3.0f);
-   meshes["cylinder"].get_transform().position = vec3(1.0f, 2.5f, -25.0f);
-  // 180 rotate X axis, move(-25.0f, 10.0f, -25.0f)
-   meshes["torus"].get_transform().scale = vec3(4.0f, 1.0f, 4.0f);
-   meshes["torus"].get_transform().position = vec3(-11.0f, 1.0f, -16.0f);
-
-  // *********************************
-
+  meshes["cylinder"].get_transform().scale = vec3(3.0f, 25.0f, 3.0f);
+  meshes["cylinder"].get_transform().position = vec3(1.0f, 2.5f, -25.0f);
+  meshes["torus"].get_transform().scale = vec3(4.0f, 1.0f, 4.0f);
+  meshes["torus"].get_transform().position = vec3(-11.0f, 1.0f, -16.0f);
+  // Set materials for the plane
+  meshes["plane"].get_material().set_emissive(vec4(0.3f, 0.3f, 0.3f, 0.3f));
+  meshes["plane"].get_material().set_diffuse(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  meshes["plane"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  meshes["plane"].get_material().set_shininess(25.0f);
+  // Set materials for pyra
+  meshes["pyra"].get_material().set_emissive(vec4(1.0f, 0.5f, 0.0f, 1.0f));
+  meshes["pyra"].get_material().set_diffuse(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  meshes["pyra"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  meshes["pyra"].get_material().set_shininess(25.0f);
+  // Set materials for cylinder
+  meshes["cylinder"].get_material().set_emissive(vec4(0.3f, 0.3f, 0.3f, 1.0f));
+  meshes["cylinder"].get_material().set_diffuse(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  meshes["cylinder"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  meshes["cylinder"].get_material().set_shininess(25.0f);
+  // Set materials for torus
+  meshes["torus"].get_material().set_emissive(vec4(0.3f, 0.3f, 0.3f, 1.0f));
+  meshes["torus"].get_material().set_diffuse(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  meshes["torus"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  meshes["torus"].get_material().set_shininess(25.0f);
   // Load texture
   tex = texture("textures/stonygrass.jpg");
   tex2 = texture("textures/stone 1.png");
   tex3 = texture("textures/fire2.jpg");
   tex4 = texture("textures/bark-1024.jpg");
-
+  // Set lighting values pos
+  light.set_position(vec3(-10.0f, 15.0f, -15.0f));
+  // Set light colour white
+  light.set_light_colour(vec4(1.0f, 0.5f, 0.0f, 1.0f));
+  // Set range to 200
+  light.set_range(2000);
+  light.set_constant_attenuation(0.1);
   // Load in shaders
   eff.add_shader("shaders/Coursework.vert", GL_VERTEX_SHADER);
   eff.add_shader("shaders/Coursework.frag", GL_FRAGMENT_SHADER);
@@ -64,15 +76,14 @@ bool load_content() {
   // Set camera properties
   freecam.set_position(vec3(10.0f, 10.0f, 10.0f));
   freecam.set_target(vec3(-100.0f, 0.0f, -100.0f));
-  
-  auto aspect = static_cast<float>(renderer::get_screen_width()) / static_cast<float>(renderer::get_screen_height());
+  auto aspect = static_cast<float>(renderer::get_screen_width()) / static_cast<float>(renderer::get_screen_height()); 
   freecam.set_projection(quarter_pi<float>(), aspect, 2.414f, 1000.0f);
   return true;
 }
 
 bool update(float delta_time) {
 
-	
+	static float range = 20.0f;
 	// The ratio of pixels to rotation - remember the fov
 	static double ratio_width = quarter_pi<float>() / static_cast<float>(renderer::get_screen_width());
 	static double ratio_height =
@@ -107,6 +118,8 @@ bool update(float delta_time) {
 	}
 	// Move camera
 	freecam.move(translation);
+	// Set light range
+	light.set_range(range);
 	// Update the camera
 	freecam.update(delta_time);
 	// Update cursor pos
@@ -128,6 +141,14 @@ bool render() {
     auto MVP = P * V * M;
     // Set MVP matrix uniform
     glUniformMatrix4fv(eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
+	// Set M matrix uniform 
+	glUniformMatrix4fv(eff.get_uniform_location("M"), 1, GL_FALSE, value_ptr(M));
+	// Set N matrix uniform
+	glUniformMatrix3fv(eff.get_uniform_location("N"),1,GL_FALSE,value_ptr(m.get_transform().get_normal_matrix()));
+	// Bind material
+	renderer::bind(m.get_material(), "mat");
+	// Bind light
+	renderer::bind(light, "point");
 
     // *********************************
     // Bind texture to renderer
@@ -145,7 +166,8 @@ bool render() {
 	}
     // Set the texture value for the shader here
 	glUniform1i(eff.get_uniform_location("tex"), 0);
-	glUniform1i(eff.get_uniform_location("tex2"), 1);
+	// Set eye position 
+	glUniform3fv(eff.get_uniform_location("eye_pos"), 1, value_ptr(freecam.get_position()));
     // *********************************
     // Render mesh
     renderer::render(m);

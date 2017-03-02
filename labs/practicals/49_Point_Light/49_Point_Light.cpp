@@ -15,6 +15,17 @@ bool load_content() {
   // Create plane mesh
   meshes["plane"] = mesh(geometry_builder::create_plane());
 
+
+
+
+
+
+
+
+
+
+
+
   // Create scene
   meshes["box"] = mesh(geometry_builder::create_box());
   meshes["tetra"] = mesh(geometry_builder::create_tetrahedron());
@@ -187,7 +198,7 @@ bool render() {
     // Bind material
 	renderer::bind(m.get_material(), "mat");
     // Bind light
-	renderer::bind(light, "light");
+	renderer::bind(light, "point");
     // Bind texture
 	renderer::bind(tex, 0);
     // Set tex uniform
@@ -196,6 +207,8 @@ bool render() {
 	glUniform3fv(eff.get_uniform_location("eye_pos"), 1, value_ptr(cam.get_position()));
     // Render mesh
 	renderer::render(m);
+
+
 
 
     // *********************************
