@@ -41,7 +41,7 @@ layout(location = 0) out vec4 colour;
 void main() {
   // *********************************
   // Calculate direction to the light
-  vec3 l = normalise(spot.position - position);
+  vec3 l = normalize(spot.position - position);
   // Calculate distance to light
   float d = distance(spot.position, position);
   // Calculate attenuation value
@@ -61,7 +61,7 @@ void main() {
   float kd = max(dot(normal, l), 0.0);
   vec4 diffuse = kd * (mat.diffuse_reflection * light_colour);
   // Calculate view direction
-  vec3 view_dir = normalize(eye_pos-position);
+  view_dir = normalize(eye_pos-position);
   // Calculate half vector
   vec3 half_vector = normalize(l + view_dir);
   // Calculate specular component
