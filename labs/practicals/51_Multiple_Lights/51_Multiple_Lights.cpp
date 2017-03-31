@@ -48,40 +48,40 @@ bool load_content() {
   // - all specular is white
   // - all shininess is 25
   // Red box
-
-
-
-
+  meshes["box"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+  meshes["box"].get_material().set_diffuse(vec4(1.0f, 0.0f, 0.0f, 1.0f));
+  meshes["box"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  meshes["box"].get_material().set_shininess(25.0f);
   // Green tetra
-
-
-
-
+  meshes["tetra"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+  meshes["tetra"].get_material().set_diffuse(vec4(0.0f, 1.0f, 0.0f, 1.0f));
+  meshes["tetra"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  meshes["tetra"].get_material().set_shininess(25.0f);
   // Blue pyramid
-
-
-
-
+  meshes["pyramid"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+  meshes["pyramid"].get_material().set_diffuse(vec4(0.0f, 0.0f, 1.0f, 1.0f));
+  meshes["pyramid"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  meshes["pyramid"].get_material().set_shininess(25.0f);
   // Yellow disk
-
-
-
-
+  meshes["disk"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+  meshes["disk"].get_material().set_diffuse(vec4(1.0f, 1.0f, 0.0f, 1.0f));
+  meshes["disk"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  meshes["disk"].get_material().set_shininess(25.0f);
   // Magenta cylinder
-
-
-
-
+  meshes["cylinder"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+  meshes["cylinder"].get_material().set_diffuse(vec4(1.0f, 0.0f, 1.0f, 1.0f));
+  meshes["cylinder"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  meshes["cylinder"].get_material().set_shininess(25.0f);
   // Cyan sphere
-
-
-
-
+  meshes["sphere"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+  meshes["sphere"].get_material().set_diffuse(vec4(0.0f, 1.0f, 1.0f, 1.0f));
+  meshes["sphere"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  meshes["sphere"].get_material().set_shininess(25.0f);
   // White torus
-
-
-
-
+  meshes["torus"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+  meshes["torus"].get_material().set_diffuse(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  meshes["torus"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  meshes["torus"].get_material().set_shininess(25.0f);
   // *********************************
 
   // Load texture
@@ -90,27 +90,37 @@ bool load_content() {
   // Set lighting values
   // *********************************
   // Point 0, Position (-25, 5, -15)
+  points[0].set_position(vec3(-25, 5, -15));
   // Red, 20 range
-
-
+  points[0].set_light_colour(vec4(1.0f, 0.0f, 0.0f, 1.0f));
+  points[0].set_range(20);
 
   // Point 1, Position (-25, 5, -35)
+  points[1].set_position(vec3(-25, 5, -35));
   // Red,20 range
+  points[1].set_light_colour(vec4(1.0f, 0.0f, 0.0f, 1.0f));
+  points[1].set_range(20);
 
 
 
   // Point 2,Position (-10, 5, -15)
+  points[2].set_position(vec3(-10, 5, -15));
   // Red,20 range
-
-
+  points[2].set_light_colour(vec4(1.0f, 0.0f, 0.0f, 1.0f));
+  points[2].set_range(20);
 
   // Point 3,Position (-10, 5, -35)
+  points[3].set_position(vec3(-10, 5, -35));
   // Red,20 range
-
+  points[3].set_light_colour(vec4(1.0f, 0.0f, 0.0f, 1.0f));
+  points[3].set_range(20);
 
 
   // Spot 0, Position (-25, 10, -15)
+  spots[0].set_position(vec3(-25, 10, -15));
   // Green, Direction (1, -1, -1) normalized
+  spots[0].set_light_colour(vec4(0.0f, 1.0f, 0.0f, 1.0f));
+  spots[0].set_direction(normalize(vec3())
   // 20 range,0.5 power
 
 
