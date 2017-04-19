@@ -7,20 +7,41 @@ using namespace glm;
 
 map<string, mesh> meshes;
 effect eff;
+effect tex_eff;
 texture tex;
+texture texmask;
+texture alpha_map;
 texture tex2;
 texture tex3;
 texture tex4;
 point_light light;
 free_camera freecam;
+frame_buffer frame;
+geometry screen_quad;
+bool masking = false;
+
 bool initialise() {
 	//Set input mode
 	glfwSetInputMode(renderer::get_window(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	return true;
 }
 bool load_content() {
+	
+	//Masking
+		// Create frame buffer - use screen width and height
+		frame = frame_buffer(renderer::get_screen_width(), renderer::get_screen_height());
+		// Create screen quad
+		vector<vec3> positions{ vec3(-1.0f, -1.0f, 0.0f), vec3(1.0f, -1.0f, 0.0f), vec3(-1.0f, 1.0f, 0.0f),
+			vec3(1.0f, 1.0f, 0.0f) };
+		vector<vec2> tex_coords{ vec2(0.0, 0.0), vec2(1.0f, 0.0f), vec2(0.0f, 1.0f), vec2(1.0f, 1.0f) };
+		screen_quad.add_buffer(positions, BUFFER_INDEXES::POSITION_BUFFER);
+		screen_quad.add_buffer(tex_coords, BUFFER_INDEXES::TEXTURE_COORDS_0);
+		screen_quad.set_type(GL_TRIANGLE_STRIP);
+		// Possible addition here
+     //Masking
+
   // Create plane mesh
-  meshes["plane"] = mesh(geometry_builder::create_plane());
+  meshes["planegrass"] = mesh(geometry_builder::create_plane());
   // Pyramid
   meshes["pyra"] = mesh(geometry_builder::create_pyramid(vec3(1.0f, 1.0f, 1.0f)));
   // Cylinder
@@ -28,7 +49,7 @@ bool load_content() {
   // Torus
   meshes["torus"] = mesh(geometry_builder::create_torus(unsigned int(10), unsigned int(10), float(1.0f), float(1.0f)));
   // Transforms for the geometry
-  meshes["plane"].get_transform().scale = vec3(5.0f);
+  meshes["planegrass"].get_transform().scale = vec3(5.0f);
   meshes["pyra"].get_transform().scale = vec3(6.0f);
   meshes["pyra"].get_transform().position = vec3(-10.0f, 5.0f, -15.0f);
   meshes["cylinder"].get_transform().scale = vec3(3.0f, 25.0f, 3.0f);
@@ -36,10 +57,10 @@ bool load_content() {
   meshes["torus"].get_transform().scale = vec3(4.0f, 1.0f, 4.0f);
   meshes["torus"].get_transform().position = vec3(-11.0f, 1.0f, -16.0f);
   // Set materials for the plane
-  meshes["plane"].get_material().set_emissive(vec4(0.3f, 0.3f, 0.3f, 0.3f));
-  meshes["plane"].get_material().set_diffuse(vec4(1.0f, 1.0f, 1.0f, 1.0f));
-  meshes["plane"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
-  meshes["plane"].get_material().set_shininess(25.0f);
+  meshes["planegrass"].get_material().set_emissive(vec4(0.3f, 0.3f, 0.3f, 0.3f));
+  meshes["planegrass"].get_material().set_diffuse(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  meshes["planegrass"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  meshes["planegrass"].get_material().set_shininess(25.0f);
   // Set materials for pyra
   meshes["pyra"].get_material().set_emissive(vec4(1.0f, 0.5f, 0.0f, 1.0f));
   meshes["pyra"].get_material().set_diffuse(vec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -56,6 +77,8 @@ bool load_content() {
   meshes["torus"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
   meshes["torus"].get_material().set_shininess(25.0f);
   // Load texture
+  texmask = texture("textures/checked.gif");
+  alpha_map = texture("textures/alpha_map.png");
   tex = texture("textures/stonygrass.jpg");
   tex2 = texture("textures/stone 1.png");
   tex3 = texture("textures/fire2.jpg");
@@ -70,19 +93,36 @@ bool load_content() {
   // Load in shaders
   eff.add_shader("shaders/Coursework.vert", GL_VERTEX_SHADER);
   eff.add_shader("shaders/Coursework.frag", GL_FRAGMENT_SHADER);
+  
+  //Masking
+   tex_eff.add_shader("shaders/Masking.frag", GL_FRAGMENT_SHADER);
+   tex_eff.add_shader("shaders/Masking.vert", GL_VERTEX_SHADER);
+  //Masking
+
   // Build effect
   eff.build();
-
+  tex_eff.build();
   // Set camera properties
   freecam.set_position(vec3(10.0f, 10.0f, 10.0f));
   freecam.set_target(vec3(-100.0f, 0.0f, -100.0f));
   auto aspect = static_cast<float>(renderer::get_screen_width()) / static_cast<float>(renderer::get_screen_height()); 
   freecam.set_projection(quarter_pi<float>(), aspect, 2.414f, 1000.0f);
   return true;
+
+
+
 }
 
 bool update(float delta_time) {
 
+	//Masking
+	if (glfwGetKey(renderer::get_window(), 'M')) {
+		masking = true;
+	}
+	if (glfwGetKey(renderer::get_window(), 'N')) {
+		masking = false;
+	}
+	//Masking
 	static float range = 20.0f;
 	// The ratio of pixels to rotation - remember the fov
 	static double ratio_width = quarter_pi<float>() / static_cast<float>(renderer::get_screen_width());
@@ -129,6 +169,16 @@ bool update(float delta_time) {
 }
 
 bool render() {
+	// Masking
+	if (masking == true) {
+
+
+		// Set render target to frame buffer
+		renderer::set_render_target(frame);
+		// Clear frame
+		renderer::clear();
+	}
+		//Masking
   // Render meshes
   for (auto &e : meshes) {
     auto m = e.second;
@@ -152,7 +202,7 @@ bool render() {
 
     // *********************************
     // Bind texture to renderer
-	if (e.first == "plane") {
+	if (e.first == "planegrass") {
 		renderer::bind(tex, 0);
 	}
 	if (e.first == "torus"){
@@ -173,8 +223,35 @@ bool render() {
     renderer::render(m);
   }
 
+  // Masking
+  if (masking == true) {
+
+
+	  // Set render target back to the screen
+	  renderer::set_render_target();
+	  // Bind Tex effect
+	  renderer::bind(tex_eff);
+	  // MVP is now the identity matrix
+	  auto MVP = glm::mat4();
+	  // Set MVP matrix uniform
+	  glUniformMatrix4fv(tex_eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
+	  // Bind texture from frame buffer to TU 0
+	  renderer::bind(frame.get_frame(), 0);
+	  // Set the tex uniform, 0
+	  glUniform1i(tex_eff.get_uniform_location("tex"), 0);
+	  // Bind alpha texture to TU, 1
+	  renderer::bind(alpha_map, 1);
+	  // Set the tex uniform, 1
+	  glUniform1i(tex_eff.get_uniform_location("tex"), 1);
+
+	  // Render the screen quad
+	  renderer::render(screen_quad);
+
+  }
+  //Masking
   return true;
 }
+
 
 void main() {
   // Create application

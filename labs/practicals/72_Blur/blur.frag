@@ -21,16 +21,18 @@ layout(location = 0) out vec4 colour;
 void main() {
   // *********************************
   // Start with colour as black
-
+  colour = vec4(0.0,0.0,0.0,0.0);
   // Loop through each sample vector
 
     // Calculate tex coord to sample
-
+	vec2 uv = tex_coord + vec2(samples[i].x * inverse_width, samples[i].y * inverse_height)
     // Sample the texture and scale appropriately
+	vec4 tex_colour = texture(tex, uv);
+
     // - scale factor stored in w component
 
 
   // Ensure alpha is 1.0
-
+  colour.a = 1.0;
   // *********************************
 }

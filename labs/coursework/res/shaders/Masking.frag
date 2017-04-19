@@ -17,7 +17,7 @@ void main() {
   vec4 tex_colour1 = texture(tex, tex_coord);
   vec4 tex_colour2 = texture(alpha_map, tex_coord);
   // Final colour is produce of these two colours
-  colour = mix(tex_colour1, tex_colour2, 0.5);
+  colour = mix(tex_colour1, tex_colour2, 0.7);
   // Ensure alpha is 1
   colour.a = 1.0;
   // *********************************

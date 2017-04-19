@@ -16,7 +16,6 @@ struct material {
   vec4 specular_reflection;
   float shininess;
 };
-
 // Point light for the scene
 uniform point_light point;
 // Material for the object
