@@ -16,6 +16,8 @@ bool load_content() {
 	meshes["plane"] = mesh(geometry_builder::create_plane());
 
 
+
+
 	// Create scene
 	meshes["box"] = mesh(geometry_builder::create_box());
 	meshes["tetra"] = mesh(geometry_builder::create_tetrahedron());

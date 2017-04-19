@@ -1,4 +1,3 @@
-
 #version 440
 
 // A directional light structure
@@ -26,7 +25,7 @@ uniform vec3 eye_pos;
 uniform sampler2D tex;
 
 // Incoming position
-layout(location = 0) in vec3 position;
+layout(location = 0) in vec3 vertex_position;
 // Incoming normal
 layout(location = 1) in vec3 transformed_normal;
 // Incoming texture coordinate
@@ -44,7 +43,7 @@ void main() {
   float kd = max(dot(transformed_normal, light.light_dir), 0.0);
   vec4 diffuse = kd * (mat.diffuse_reflection * light.light_colour);
   // Calculate view direction
-  vec3 view_dir = normalize(eye_pos-position);
+  vec3 view_dir = normalize(eye_pos-vertex_position);
   // Calculate half vector
   vec3 half_vector = normalize(light.light_dir + view_dir);
   // Calculate specular component

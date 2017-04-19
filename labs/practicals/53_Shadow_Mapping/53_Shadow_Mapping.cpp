@@ -118,6 +118,8 @@ bool render() {
     glUniformMatrix4fv(shadow_eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
     // Render mesh
     renderer::render(m);
+
+
   }
 
   // *********************************
