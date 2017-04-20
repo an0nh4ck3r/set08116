@@ -7,9 +7,13 @@ using namespace glm;
 
 map<string, mesh> meshes;
 effect eff;
+//Masking
 effect tex_eff;
+//Masking
+//Greyscale
+effect tex_effgray;
+//Greyscale
 texture tex;
-texture texmask;
 texture alpha_map;
 texture tex2;
 texture tex3;
@@ -19,6 +23,7 @@ free_camera freecam;
 frame_buffer frame;
 geometry screen_quad;
 bool masking = false;
+bool greyscale = false;
 
 bool initialise() {
 	//Set input mode
@@ -27,7 +32,7 @@ bool initialise() {
 }
 bool load_content() {
 	
-	//Masking
+	//Masking - Greyscale
 		// Create frame buffer - use screen width and height
 		frame = frame_buffer(renderer::get_screen_width(), renderer::get_screen_height());
 		// Create screen quad
@@ -38,7 +43,7 @@ bool load_content() {
 		screen_quad.add_buffer(tex_coords, BUFFER_INDEXES::TEXTURE_COORDS_0);
 		screen_quad.set_type(GL_TRIANGLE_STRIP);
 		// Possible addition here
-     //Masking
+     //Masking - Greyscale
 
   // Create plane mesh
   meshes["planegrass"] = mesh(geometry_builder::create_plane());
@@ -77,7 +82,7 @@ bool load_content() {
   meshes["torus"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
   meshes["torus"].get_material().set_shininess(25.0f);
   // Load texture
-  texmask = texture("textures/checked.gif");
+  
   alpha_map = texture("textures/alpha_map.png");
   tex = texture("textures/stonygrass.jpg");
   tex2 = texture("textures/stone 1.png");
@@ -96,12 +101,17 @@ bool load_content() {
   
   //Masking
    tex_eff.add_shader("shaders/Masking.frag", GL_FRAGMENT_SHADER);
+  //Masking
    tex_eff.add_shader("shaders/Masking.vert", GL_VERTEX_SHADER);
   //Masking
-
+  //Greyscale
+   tex_effgray.add_shader("shaders/Greyscale.frag", GL_FRAGMENT_SHADER);
+   tex_effgray.add_shader("shaders/Masking.vert", GL_VERTEX_SHADER);
+  //Greyscale
   // Build effect
   eff.build();
   tex_eff.build();
+  tex_effgray.build();
   // Set camera properties
   freecam.set_position(vec3(10.0f, 10.0f, 10.0f));
   freecam.set_target(vec3(-100.0f, 0.0f, -100.0f));
@@ -123,6 +133,16 @@ bool update(float delta_time) {
 		masking = false;
 	}
 	//Masking
+
+	//Greyscale
+	if (glfwGetKey(renderer::get_window(), 'G')) {
+		greyscale = true;
+	}
+	if (glfwGetKey(renderer::get_window(), 'F')) {
+		greyscale = false;
+	}
+	//Greyscale
+
 	static float range = 20.0f;
 	// The ratio of pixels to rotation - remember the fov
 	static double ratio_width = quarter_pi<float>() / static_cast<float>(renderer::get_screen_width());
@@ -169,8 +189,8 @@ bool update(float delta_time) {
 }
 
 bool render() {
-	// Masking
-	if (masking == true) {
+	// Masking - Greyscale
+	if (masking == true || greyscale == true) {
 
 
 		// Set render target to frame buffer
@@ -178,7 +198,8 @@ bool render() {
 		// Clear frame
 		renderer::clear();
 	}
-		//Masking
+		//Masking - Greyscale
+
   // Render meshes
   for (auto &e : meshes) {
     auto m = e.second;
@@ -222,21 +243,23 @@ bool render() {
     // Render mesh
     renderer::render(m);
   }
-
+  if (masking == true || greyscale == true) {
+	  // Set render target back to the screen
+	  renderer::set_render_target();
+	  // Bind texture from frame buffer
+	  renderer::bind(frame.get_frame(), 0);
+	 
+  }
   // Masking
   if (masking == true) {
 
 
-	  // Set render target back to the screen
-	  renderer::set_render_target();
 	  // Bind Tex effect
 	  renderer::bind(tex_eff);
 	  // MVP is now the identity matrix
 	  auto MVP = glm::mat4();
 	  // Set MVP matrix uniform
 	  glUniformMatrix4fv(tex_eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
-	  // Bind texture from frame buffer to TU 0
-	  renderer::bind(frame.get_frame(), 0);
 	  // Set the tex uniform, 0
 	  glUniform1i(tex_eff.get_uniform_location("tex"), 0);
 	  // Bind alpha texture to TU, 1
@@ -249,6 +272,20 @@ bool render() {
 
   }
   //Masking
+
+  //Greyscale
+  if (greyscale == true) {
+	  renderer::bind(tex_effgray);
+	  // MVP is now the identity matrix
+	  auto MVP = glm::mat4();
+	  // Set MVP matrix uniform
+	  glUniformMatrix4fv(tex_effgray.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
+	  // Set the tex uniform
+	  glUniform1i(tex_effgray.get_uniform_location("tex"), 0);
+	  // Render the screen quad
+	  renderer::render(screen_quad);
+  }
+  
   return true;
 }
 
